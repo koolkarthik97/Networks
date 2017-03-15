@@ -1,0 +1,33 @@
+#include<stdio.h>
+#include<sys/socket.h>
+#include<string.h>
+#include<netinet/in.h>
+int main()
+{
+        int sock,c;
+        struct sockaddr_in server;
+        char server_reply[2000],msg[2000];
+        sock=socket(AF_INET,SOCK_DGRAM,0);
+        if(sock==-1)
+        {
+        perror("socket creation failed");
+        return 1;
+        }
+        puts("socket created");
+        server.sin_addr.s_addr=inet_addr("127.0.0.1");
+        server.sin_family=AF_INET;
+        server.sin_port=htons(3507);
+      //  connect(sock,(struct sockaddr *)&server,sizeof(server));
+        c=sizeof(server);
+        while(1)
+        {
+                printf("\nenter message:\n");
+                scanf("%s",msg);
+                sendto(sock,msg,2000,0,(struct sockaddr *)&server,c);
+                recvfrom(sock,server_reply,2000,0,(struct sockaddr*)&server,&c);
+                puts("server reply:");
+                puts(server_reply);
+        }
+close(sock);
+return 0;
+}

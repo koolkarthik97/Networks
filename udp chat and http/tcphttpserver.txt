@@ -1,0 +1,38 @@
+#include<stdio.h>
+#include<sys/socket.h>
+#include<string.h>
+#include<arpa/inet.h>
+#include<netdb.h>
+#include<unistd.h>
+int main()
+{
+        int sock_desc,client_sock,c,read_size;
+        struct sockaddr_in server,client;
+        char client_msg[2000];
+        sock_desc=socket(AF_INET,SOCK_STREAM,0);
+        if(sock_desc==-1)
+        {
+        perror("socket creation failed");
+        return 1;
+        }
+        puts("socket created");
+        server.sin_addr.s_addr=INADDR_ANY;
+        server.sin_family=AF_INET;
+        server.sin_port=htons(3507);
+        int k=bind(sock_desc,(struct sockaddr *)&server,sizeof(server));
+       printf("%d",k);
+         listen(sock_desc,3);
+        puts("\n listening");
+        c=sizeof(client);
+         client_sock=accept(sock_desc,(struct sockaddr *)&client,&c);
+        puts("\n accepted");
+        close(sock_desc);
+        while(1)
+        {
+        read(client_sock,client_msg,2000);
+        char msg[]="HTTP/1.1 200 OK\nConnection: close\nDate:ngh\nServer:abc\nLast-Modified:dfg\nContent-Length:6821\nContent-Type:text/html\n\n<html>\n<body>\n\n<h1>hello arun</h1>\n\n</body>\n</html>";
+write(client_sock,msg,sizeof(msg));
+        }
+        close(client_sock);
+return 0;
+}
